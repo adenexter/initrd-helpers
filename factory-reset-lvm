@@ -22,6 +22,7 @@
 # Parameters:
 # $1 -> Root size in MB
 # $2 -> Reserve space for later use in MB
+# $3... -> Options
 
 ROOTDEV="/dev/sailfish/root"
 HOMEDEV="/dev/sailfish/home"
@@ -146,6 +147,10 @@ cd $WORKDIR
 lvm vgchange -a n
 lvm vgremove -y sailfish
 lvm pvremove -y $PHYSDEV
+
+if test "$SAILFISHOS_WIPE_PARTITIONS" = "1"; then
+	dd if=/dev/zero of=$PHYSDEV bs=4096
+fi
 
 # Create the LVM setup
 if ! lvm pvcreate $PHYSDEV; then
